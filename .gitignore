@@ -1,8 +1,11 @@
+*.o
 *.in
 *.out
 *.ref
 *.zip
 *.log
 *.txt
+
+test.c
 
 .vscode/
