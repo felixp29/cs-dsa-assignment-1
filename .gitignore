@@ -6,6 +6,4 @@
 *.log
 *.txt
 
-test.c
-
 .vscode/
