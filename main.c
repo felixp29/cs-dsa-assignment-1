@@ -1,6 +1,7 @@
 #include "structures.h"
 #include "system_utils.h"
 #include "list_utils.h"
+#include "operations.h"
 
 int main() {
     FILE *in = fopen("tema1.in", "r");
@@ -56,9 +57,9 @@ int main() {
             char description_buffer[200];
             fscanf(in, "%d %s", &id, priority_buffer);
             fscanf(in, " \"%[^\"]\"", description_buffer);
-            /* Handled in operations module */
+            add_incident_operation(sys, id, priority_buffer, description_buffer);
         } else if (strcmp(command_buffer, "CHECK_UNITS_AVAILABILITY") == 0) {
-            /* Handled in operations module */
+            check_units_availability_operation(sys, out);
         } else if (strcmp(command_buffer, "DISPATCH") == 0) {
             /* Handled in operations module */
         } else if (strcmp(command_buffer, "UNDO_LAST_DISPATCH") == 0) {
@@ -69,9 +70,11 @@ int main() {
         } else if (strcmp(command_buffer, "SHOW_UNIT") == 0) {
             int id;
             fscanf(in, "%d", &id);
+            show_unit_operation(sys, id, out);
         } else if (strcmp(command_buffer, "SHOW_INCIDENT") == 0) {
             int id;
             fscanf(in, "%d", &id);
+            show_incident_operation(sys, id, out);
         } else if (strcmp(command_buffer, "SHOW_INTERVENTIONS") == 0) {
             /* Handled in operations module */
         }
