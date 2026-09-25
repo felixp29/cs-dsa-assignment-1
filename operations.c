@@ -17,6 +17,16 @@ void add_incident_operation(System *sys, int id, char *priority, char *desc) {
     }
 }
 
+void check_units_availability_operation(System *sys, FILE *out) {
+    int count = 0;
+    Node *current = sys->queue_available_units->front;
+    while (current != NULL) {
+        count++;
+        current = current->next;
+    }
+    fprintf(out, "Number of available units: %d\n", count);
+}
+
 void show_unit_operation(System *sys, int id, FILE *out) {
     Unit *u = find_unit_by_id(sys, id);
     if (u == NULL) {
