@@ -46,3 +46,40 @@ void show_incident_operation(System *sys, int id, FILE *out) {
     fprintf(out, "Incident %d has %s priority, the following description: \"%s\" and is %s\n",
             inc->id, inc->priority, inc->description, inc->status);
 }
+
+void dispatch_operation(System *sys, FILE *out) {
+    Queue *q_target = NULL;
+
+    /* Select the highest priority non-empty queue (high, medium, low) */
+    if (sys->queue_high->front != NULL) {
+        q_target = sys->queue_high;
+    } else if (sys->queue_medium->front != NULL) {
+        q_target = sys->queue_medium;
+    } else if (sys->queue_low->front != NULL) {
+        q_target = sys->queue_low;
+    }
+
+    if (q_target == NULL || sys->queue_available_units->front == NULL) {
+        fprintf(out, "INVALID OPERATION! ERROR 404\n");
+        return;
+    }
+
+    /* Dispatch the intervention: assign unit to incident and update records */
+    IncidentList inc = (IncidentList)dequeue(q_target);
+    Unit *u = (Unit *)dequeue(sys->queue_available_units);
+
+    strcpy(inc->status, "intervened");
+    u->availability = 0;
+
+    InterventionList new_inter = malloc(sizeof(Intervention));
+    new_inter->incident = inc;
+    new_inter->unit = u;
+
+    InterventionList last = sys->interventions->prev;
+    new_inter->next = sys->interventions;
+    new_inter->prev = last;
+    last->next = new_inter;
+    sys->interventions->prev = new_inter;
+
+    push(&(sys->history_stack), new_inter);
+}

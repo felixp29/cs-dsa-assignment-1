@@ -61,7 +61,7 @@ int main() {
         } else if (strcmp(command_buffer, "CHECK_UNITS_AVAILABILITY") == 0) {
             check_units_availability_operation(sys, out);
         } else if (strcmp(command_buffer, "DISPATCH") == 0) {
-            /* Handled in operations module */
+            dispatch_operation(sys, out);
         } else if (strcmp(command_buffer, "UNDO_LAST_DISPATCH") == 0) {
             /* Handled in operations module */
         } else if (strcmp(command_buffer, "SOLVED_INCIDENT") == 0) {
