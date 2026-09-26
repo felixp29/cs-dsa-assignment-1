@@ -83,3 +83,41 @@ void dispatch_operation(System *sys, FILE *out) {
 
     push(&(sys->history_stack), new_inter);
 }
+
+void solved_incident_operation(System *sys, int id, FILE *out) {
+    IncidentList inc = find_incident_by_id(sys, id);
+    if (inc == NULL || strcmp(inc->status, "intervened") != 0) {
+        fprintf(out, "INVALID OPERATION! ERROR 404\n");
+        return;
+    }
+
+    /* Mark incident <id> as solved */
+    strcpy(inc->status, "solved");
+
+    /* Locate the assigned unit in the circular intervention list and release it */
+    InterventionList current = sys->interventions->next;
+    while (current != sys->interventions) {
+        if (current->incident->id == id) {
+            /* Release unit while keeping the intervention node in history stack */
+            current->unit->availability = 1;
+            enqueue(&(sys->queue_available_units), current->unit);
+            return;
+        }
+        current = current->next;
+    } 
+}
+
+void show_interventions_operation(System *sys, FILE *out) {
+    InterventionList current = sys->interventions->next;
+    if (current == sys->interventions) {
+        fprintf(out, "No intervention has been initiated\n");
+        return;
+    }
+
+    /* Print all active and solved interventions until sentinel is reached */
+    while (current != sys->interventions) {
+        fprintf(out, "Incident %d was assigned to unit %d, and has the following status: \"%s\"\n",
+                current->incident->id, current->unit->id, current->incident->status);
+        current = current->next;
+    }
+}

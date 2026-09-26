@@ -67,6 +67,7 @@ int main() {
         } else if (strcmp(command_buffer, "SOLVED_INCIDENT") == 0) {
             int id;
             fscanf(in, "%d", &id);
+            solved_incident_operation(sys, id, out);
         } else if (strcmp(command_buffer, "SHOW_UNIT") == 0) {
             int id;
             fscanf(in, "%d", &id);
@@ -76,7 +77,7 @@ int main() {
             fscanf(in, "%d", &id);
             show_incident_operation(sys, id, out);
         } else if (strcmp(command_buffer, "SHOW_INTERVENTIONS") == 0) {
-            /* Handled in operations module */
+            show_interventions_operation(sys, out);
         }
     }
 

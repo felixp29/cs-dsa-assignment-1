@@ -9,5 +9,7 @@ void show_incident_operation(System *sys, int id, FILE *out);
 void show_unit_operation(System *sys, int id, FILE *out);
 void check_units_availability_operation(System *sys, FILE *out);
 void dispatch_operation(System *sys, FILE *out);
+void solved_incident_operation(System *sys, int id, FILE *out);
+void show_interventions_operation(System *sys, FILE *out);
 
 #endif
