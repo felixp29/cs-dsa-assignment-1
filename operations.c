@@ -121,3 +121,55 @@ void show_interventions_operation(System *sys, FILE *out) {
         current = current->next;
     }
 }
+
+void undo_last_dispatch_operation(System *sys, FILE *out) {
+    /* Search the history stack for the first unsolved intervention */
+    while (sys->history_stack != NULL) {
+        InterventionList inter = (InterventionList)sys->history_stack->data;
+
+        /* Skip and discard interventions that are already marked as solved */
+        if (strcmp(inter->incident->status, "solved") == 0) {
+            pop(&(sys->history_stack));
+            continue;
+        }
+        
+        /* Revert incident status to queued and restore unit availability */
+        strcpy(inter->incident->status, "queued");
+        inter->unit->availability = 1;
+
+        /* Reinsert the incident at the front of its designated priority queue */
+        Queue *q_target = NULL;
+        if (strcmp(inter->incident->priority, "high") == 0) {
+            q_target = sys->queue_high;
+        } else if (strcmp(inter->incident->priority, "medium") == 0) {
+            q_target = sys->queue_medium;
+        } else if (strcmp(inter->incident->priority, "low") == 0){
+            q_target = sys->queue_low;
+        }
+
+        Node *new_node = malloc(sizeof(Node));
+        new_node->data = inter->incident;
+        new_node->next = q_target->front;
+        q_target->front = new_node;
+
+        /* If the queue was empty, the prepended node also becomes the back node */
+        if (q_target->back == NULL) {
+            q_target->back = new_node;
+        }
+
+        /* Return the unit to the available units queue */
+        enqueue(&(sys->queue_available_units), inter->unit);
+
+        /* Remove the intervention node from the circular list */
+        inter->prev->next = inter->next;
+        inter->next->prev = inter->prev;
+        free(inter);
+
+        /* Remove the entry from the top of the history stack */
+        pop(&(sys->history_stack));
+        return;
+    }
+
+    /* Output error if no active dispatch could be reverted */
+    fprintf(out, "INVALID OPERATION! ERROR 404\n");
+}

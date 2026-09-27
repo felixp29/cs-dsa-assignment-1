@@ -63,7 +63,7 @@ int main() {
         } else if (strcmp(command_buffer, "DISPATCH") == 0) {
             dispatch_operation(sys, out);
         } else if (strcmp(command_buffer, "UNDO_LAST_DISPATCH") == 0) {
-            /* Handled in operations module */
+            undo_last_dispatch_operation(sys, out);
         } else if (strcmp(command_buffer, "SOLVED_INCIDENT") == 0) {
             int id;
             fscanf(in, "%d", &id);
