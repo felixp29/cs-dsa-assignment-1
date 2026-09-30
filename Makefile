@@ -12,6 +12,9 @@ build: $(OBJ)
 run: build
 	./tema1
 
+valgrind: build
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./tema1
+
 clean:
 	rm -f *.o tema1
 	rm -f tema1.in tema1.out
