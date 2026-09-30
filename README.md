@@ -6,7 +6,7 @@ Simulation of a 112 emergency dispatch system implemented in C for the Data Stru
 
 ### Project Structure
 
-* `structures.h` - defines the data structures requested by the assignment requirements along with internal helper wrappers:
+* `structures.h` - defines the data structures required by the assignment:
 
   * `Unit`: dynamically allocated array storing available and deployed units
 
